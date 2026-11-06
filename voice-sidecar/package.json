@@ -1,0 +1,28 @@
+{
+  "name": "voice-sidecar",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Issues LiveKit tokens for proximity voice in the hotel",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/server.js",
+    "dev": "tsx watch src/server.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "mint-link": "tsx scripts/mint-link.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.4.1",
+    "fastify": "^5.12.8",
+    "livekit-server-sdk": "^2.19.2",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.23.15",
+    "typescript": "~5.9.3",
+    "vitest": "^5.1.0"
+  }
+}

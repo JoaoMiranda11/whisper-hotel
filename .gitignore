@@ -2,3 +2,7 @@
 **/*.pid
 emulator/logging
 nitro/nitro-assets/*
+# secrets
+.env
+.env.*
+!.env.example

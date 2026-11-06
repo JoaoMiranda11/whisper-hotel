@@ -1,0 +1,50 @@
+# Production reverse proxy (example). Browsers only grant microphone access on HTTPS
+# (or http://localhost), so anything served to friends over the internet MUST go through this.
+#
+# DNS: point all hostnames below to the server. Caddy obtains certificates automatically.
+# Run Caddy on the same docker network as the stack (service names below), or swap them for 127.0.0.1:<port>.
+#
+# After switching to HTTPS, update:
+#   - nitro/configuration/nitro-react/public/renderer-config.json: socket.url=wss://ws.example.com, asset.url=https://assets.example.com, image.library.url=https://swf.example.com/c_images/ ...
+#   - nitro/configuration/nitro-react/public/ui-config.json: voice.sidecar.url=https://hotel.example.com/voice-api
+#   - .env: LK_PUBLIC_URL=wss://voice.example.com, NITRO_ORIGIN=https://hotel.example.com, LK_NODE_IP=<public IP>
+#
+# NOT proxied by Caddy (open directly on the firewall): 7881/tcp, 7882/udp (WebRTC media), 3478/udp (TURN).
+
+{
+	email admin@example.com
+}
+
+hotel.example.com {
+	encode gzip
+
+	# voice-sidecar under the same origin: no CORS preflight in practice.
+	handle_path /voice-api/* {
+		reverse_proxy voice-sidecar:8090
+	}
+
+	# Nitro client (nitro-docker runs the Vite dev server; a static `yarn build` served by Caddy is better for prod).
+	handle {
+		reverse_proxy nitro:5154
+	}
+}
+
+assets.example.com {
+	encode gzip
+	reverse_proxy nitro:8080
+}
+
+swf.example.com {
+	encode gzip
+	reverse_proxy nitro:8081
+}
+
+# Arcturus NitroWebsockets (Caddy proxies WebSocket upgrades transparently).
+ws.example.com {
+	reverse_proxy arcturus:2096
+}
+
+# LiveKit signaling (wss). Media does not go through here.
+voice.example.com {
+	reverse_proxy livekit:7880
+}

@@ -1,0 +1,25 @@
+# LiveKit SFU config for proximity voice.
+# API keys are NOT here: they come from LIVEKIT_KEYS ("<key>: <secret>"), set in docker-compose from .env.
+# Env vars of the form LIVEKIT_<SECTION>_<FIELD> override fields below (e.g. LIVEKIT_TURN_ENABLED).
+
+port: 7880            # HTTP/WebSocket signaling (proxied as wss:// in production)
+logging:
+  level: info
+
+rtc:
+  tcp_port: 7881      # ICE/TCP fallback
+  udp_port: 7882      # single UDP port (UDP mux) for all media
+  use_external_ip: false   # we advertise --node-ip explicitly (see compose)
+
+room:
+  auto_create: true
+  empty_timeout: 60
+  max_participants: 50
+
+turn:
+  # Embedded TURN. Off by default (local dev doesn't need it).
+  # Production: LK_TURN_ENABLED=true, LK_TURN_DOMAIN=turn.example.com, and open 3478/udp (+5349/tcp if TLS).
+  enabled: false
+  udp_port: 3478
+  tls_port: 0          # set 5349 + cert/key (or put TLS in front) to enable TURN/TLS
+  external_tls: false
