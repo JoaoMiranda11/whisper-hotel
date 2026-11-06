@@ -60,7 +60,7 @@ services:
 
   livekit:
     container_name: livekit
-    image: livekit/livekit-server:v1.8.4
+    image: livekit/livekit-server:v1.13.10
     command: ["--config", "/etc/livekit.yaml", "--node-ip", "${LK_NODE_IP:-127.0.0.1}"]
     environment:
       - "LIVEKIT_KEYS=${LK_KEY:?set LK_KEY in .env}: ${LK_SECRET:?set LK_SECRET in .env}"

@@ -1199,5 +1199,16 @@
             "display": "BUBBLE",
             "image": "${image.library.url}/album1584/X1517.gif"
         }
+    },
+    "voice": {
+        "enabled": true,
+        "sidecarUrl": "http://127.0.0.1:8090",
+        "hearRadius": 8,
+        "unsubscribeRadius": 9,
+        "maxSubscriptions": 10,
+        "tickMs": 200,
+        "stereoPan": true,
+        "pushToTalkKey": "KeyV",
+        "pushToTalkDefault": false
     }
 }

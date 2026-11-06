@@ -44,3 +44,6 @@ The first database come from mysql/dumps, it's the base Arcturus database for 3.
 - All the configurations for nitro-react are in `nitro/configuration`. If you make some change, just make `just restart-nitro`
 
 ### Have fun <3
+
+### Proximity voice
+Room-based proximity voice (LiveKit + voice-sidecar). See [docs/voice.md](docs/voice.md).
