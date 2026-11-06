@@ -58,5 +58,44 @@ services:
     networks:
       nitro:
 
+  livekit:
+    container_name: livekit
+    image: livekit/livekit-server:v1.8.4
+    command: ["--config", "/etc/livekit.yaml", "--node-ip", "${LK_NODE_IP:-127.0.0.1}"]
+    environment:
+      - "LIVEKIT_KEYS=${LK_KEY:?set LK_KEY in .env}: ${LK_SECRET:?set LK_SECRET in .env}"
+      - LIVEKIT_TURN_ENABLED=${LK_TURN_ENABLED:-false}
+      - LIVEKIT_TURN_DOMAIN=${LK_TURN_DOMAIN:-}
+    volumes:
+      - ./livekit/livekit.yaml:/etc/livekit.yaml:ro
+    ports:
+      - 7880:7880
+      - 7881:7881/tcp
+      - 7882:7882/udp
+      - 3478:3478/udp
+    restart: unless-stopped
+    networks:
+      nitro:
+
+  voice-sidecar:
+    container_name: voice-sidecar
+    build:
+      context: voice-sidecar
+    environment:
+      - PORT=8090
+      - LK_KEY=${LK_KEY:?set LK_KEY in .env}
+      - LK_SECRET=${LK_SECRET:?set LK_SECRET in .env}
+      - LK_PUBLIC_URL=${LK_PUBLIC_URL:?set LK_PUBLIC_URL in .env}
+      - VOICE_AUTH_SECRET=${VOICE_AUTH_SECRET:?set VOICE_AUTH_SECRET in .env}
+      - NITRO_ORIGIN=${NITRO_ORIGIN:?set NITRO_ORIGIN in .env}
+      - NITRO_PUBLIC_URL=${NITRO_PUBLIC_URL:-http://127.0.0.1:1080}
+    ports:
+      - 8090:8090
+    depends_on:
+      - livekit
+    restart: unless-stopped
+    networks:
+      nitro:
+
 networks:
   nitro:
